@@ -3,6 +3,5 @@
 select origin, sum(fans) as nb_fans
 from metal_bands
 GROUP BY origin
-order by nb_fans desc
-LIMIT 9;
+order by nb_fans desc;
 
