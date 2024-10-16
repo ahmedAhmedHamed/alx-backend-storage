@@ -1,7 +1,10 @@
 -- creates the users table
 -- creates the users table
-CREATE TABLE users IF NOT EXISTS (
-id int, email varchar(255) NOT NULL UNIQUE, name varchar(255),
-PRIMARY KEY (id)
+CREATE TABLE IF NOT EXISTS users (
+	id int AUTO_INCREMENT,
+	email varchar(255) NOT NULL,
+	name varchar(255),
+	PRIMARY KEY (id),
+	UNIQUE (email)
 );
 
