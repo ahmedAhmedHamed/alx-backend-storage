@@ -34,14 +34,9 @@ BEGIN
                            where id = projectId);
     set counter = counter + (projectWeight);
     set res = (res + (projectWeight * studentScore));
-    select projectWeight;
-    select studentScore;
-    select counter;
     END LOOP;
     
   CLOSE cursorCorrections;
-  select res;
-  select counter;
   IF (counter = 0) THEN
     UPDATE users
     SET
