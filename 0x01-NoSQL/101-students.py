@@ -11,9 +11,6 @@ def top_students(mongo_collection: pymongo.collection.Collection):
     """
     pipeline = [
         {
-            '$unwind': '$topics'
-        },
-        {
             '$addFields': {'averageScore': {'$avg': "$topics.score"}}
         },
         {
