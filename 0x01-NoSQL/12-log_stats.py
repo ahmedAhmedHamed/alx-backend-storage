@@ -18,7 +18,7 @@ if __name__ == "__main__":
     #     print(y)
 
     for method in methods:
-        print(f'\t\t\t\tmethod {method}: '
+        print(f'    method {method}: '
               f'{log_collection.count_documents({"method": method})}')
     count_status = log_collection.count_documents({
         "method": "GET",
