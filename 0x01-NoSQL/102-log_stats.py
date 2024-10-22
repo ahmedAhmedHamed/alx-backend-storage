@@ -40,5 +40,5 @@ if __name__ == "__main__":
     ]
     x = log_collection.aggregate(pipeline)
     for y in x:
-        print(y)
+        print(f'\t{y["_id"]}: {y["count"]}')
 
