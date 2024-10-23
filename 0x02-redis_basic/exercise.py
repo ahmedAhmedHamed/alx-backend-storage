@@ -12,9 +12,17 @@ def replay(method: Callable):
     """
     method needs to be a bound function
     """
-    print(method.__qualname__)
-    print(method.__self__)
-
+    print()
+    in_history = (method.__self__
+                  ._redis.lrange(method.__qualname__ + ':inputs', 0, -1))
+    out_history = (method.__self__
+                  ._redis.lrange(method.__qualname__ + ':outputs', 0, -1))
+    print(f'{method.__qualname__} was called {len(in_history)} times:')
+    for i in range(len(in_history)):
+        in_message = f'{method.__qualname__} (*{in_history[i].decode("utf-8")})'
+        arrow = ' -> '
+        out_message = out_history[i].decode("utf-8")
+        print(in_message + arrow + out_message)
 
 def count_calls(method: Callable) -> Callable:
     """
