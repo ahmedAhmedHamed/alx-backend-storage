@@ -31,4 +31,6 @@ def get_page(url: str) -> str:
     gets a page using requests.get
     """
     res = requests.get(url).text
+    cache = redis.Redis()
+    cache.incr(url)
     return res
