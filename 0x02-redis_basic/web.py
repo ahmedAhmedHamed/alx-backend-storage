@@ -25,6 +25,7 @@ def cache_decorator(method: Callable) -> Callable:
         if res:
             return res.decode('utf-8')
         res = method(url)
+        cache.set(f'count:{url}', 0)
         cache.setex(f"cached:{url}", 10, res)
         return res
     return inner
