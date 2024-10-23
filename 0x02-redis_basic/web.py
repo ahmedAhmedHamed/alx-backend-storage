@@ -14,7 +14,9 @@ def cache_decorator(method: Callable) -> Callable:
     """
     caches a function's result given args
     """
-    def inner(*args, **kwargs):
+
+    @wraps(method)
+    def inner(*args):
         """
         inner func
         """
@@ -22,7 +24,7 @@ def cache_decorator(method: Callable) -> Callable:
         res = cache.get(f"cached:{args[0]}")
         if res:
             return res.decode('utf-8')
-        res = method(*args, **kwargs)
+        res = method(args[0])
         cache.setex(f"cached:{args[0]}", 10, res)
         return res
     return inner
