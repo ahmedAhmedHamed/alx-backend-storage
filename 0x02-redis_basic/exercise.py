@@ -3,7 +3,7 @@
 redis exercise
 """
 import redis
-from typing import Callable, Union
+from typing import Callable, Union, Optional
 import uuid
 
 
@@ -26,16 +26,13 @@ class Cache:
         self._redis.set(random_key, data)
         return random_key
 
-    def get(self, key: str, fn: Callable | int | str = None):
+    def get(self, key: str, fn: Optional[Callable] = None) -> (
+            Union)[str, bytes, int, float]:
         """
         gets data from cache
         """
         if fn is None:
             return self._redis.get(key)
-        if fn is str:
-            pass
-        if fn is int:
-            pass
         return fn(self._redis.get(key))
 
     def get_int(self, key: str) -> int:
