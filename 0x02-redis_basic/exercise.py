@@ -8,6 +8,22 @@ from typing import Callable, Union, Optional
 import uuid
 
 
+def call_history(method: Callable) -> Callable:
+    """
+    sets the call history of a function
+    """
+    @wraps(method)
+    def inner(self, *args, **kwargs):
+        """
+        inner doc
+        """
+        self._redis.rpush(method.__qualname__ + ':inputs', str(args))
+        ret = method(self, *args, **kwargs)
+        self._redis.rpush(method.__qualname__ + ':outputs', ret)
+        return ret
+    return inner
+
+
 def count_calls(method: Callable) -> Callable:
     """
     counts the call of a particular function
@@ -34,6 +50,7 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    @call_history
     @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """
