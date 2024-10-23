@@ -12,16 +12,15 @@ def replay(method: Callable):
     """
     method needs to be a bound function
     """
-    print()
     cache = redis.Redis()
-    in_history = cache.lrange(method.__qualname__ + ':inputs', 0, -1)
-    out_history = cache.lrange(method.__qualname__ + ':outputs', 0, -1)
-    print(f'{method.__qualname__} was called {len(in_history)} times:')
-    for i in range(len(in_history)):
-        in_message = f'{method.__qualname__} (*{in_history[i].decode("utf-8")})'
-        arrow = ' -> '
-        out_message = out_history[i].decode("utf-8")
-        print(in_message + arrow + out_message)
+    name = method.__qualname__
+    call_count = int(cache.get(name).decode("utf-8"))
+    in_history = cache.lrange(name + ':inputs', 0, -1)
+    out_history = cache.lrange(name + ':outputs', 0, -1)
+    print(f'{name} was called {call_count} times:')
+    for i_history, o_history in zip(in_history, out_history):
+        print("{}(*{}) -> {}".format(name, i_history.decode('utf-8'),
+                                     o_history.decode('utf-8')))
 
 
 def call_history(method: Callable) -> Callable:
