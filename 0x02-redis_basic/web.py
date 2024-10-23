@@ -12,10 +12,10 @@ import redis
 redis_instance = redis.Redis()
 
 
-def cache(method):
+def cache(method: Callable) -> Callable:
     """ decorator for url """
     @wraps(method)
-    def wrapper(url):
+    def wrapper(url: str):
         """ decorator for url """
         cached_key = "cached:" + url
         cached_data = redis_instance.get(cached_key)
@@ -31,7 +31,11 @@ def cache(method):
 @cache
 def get_page(url: str) -> str:
     """ Returns HTML content of a url """
-    count_key = "count:" + url
+    count_key = "count:{" + url + "}"
     redis_instance.incr(count_key)
-    # res = requests.get(url)
-    return 'amongus'
+    res = ''
+    try:
+        res = requests.get(url)
+    except:
+        pass
+    return res.text
