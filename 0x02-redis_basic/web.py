@@ -2,9 +2,12 @@
 """
 web redis exercise
 """
+from functools import wraps
 from typing import Callable
 import requests
 import redis
+
+cache = redis.Redis()
 
 
 def cache_decorator(method: Callable) -> Callable:
@@ -15,7 +18,7 @@ def cache_decorator(method: Callable) -> Callable:
         """
         inner func
         """
-        cache = redis.Redis()
+
         res = cache.get(str(*args))
         if res:
             return res.decode('utf-8')
