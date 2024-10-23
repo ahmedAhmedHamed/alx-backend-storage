@@ -17,7 +17,7 @@ def cache(method: Callable) -> Callable:
     @wraps(method)
     def wrapper(url: str):
         """ decorator for url """
-        cached_key = "cached:" + url
+        cached_key = url
         cached_data = redis_instance.get(cached_key)
         if cached_data:
             return cached_data.decode("utf-8")
@@ -33,9 +33,5 @@ def get_page(url: str) -> str:
     """ Returns HTML content of a url """
     count_key = "count:{" + url + "}"
     redis_instance.incr(count_key)
-    res = ''
-    try:
-        res = requests.get(url)
-    except:
-        pass
+    res = requests.get(url)
     return res.text
