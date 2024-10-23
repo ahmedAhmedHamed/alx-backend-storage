@@ -32,5 +32,5 @@ def get_page(url: str) -> str:
     """
     res = requests.get(url).text
     cache = redis.Redis()
-    cache.incr(url)
+    cache.incr(f'count:{url}')
     return res
