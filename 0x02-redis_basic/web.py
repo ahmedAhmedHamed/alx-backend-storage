@@ -13,6 +13,6 @@ def get_page(url: str) -> str:
     if cached_html:
         return cached_html.decode('utf-8')
     html = requests.get(url).text
-    cache.incr("count:{" + url + "}")
+    cache.incr("count:" + url)
     cache.setex(f"cached:{url}", 10, html)
     return html
