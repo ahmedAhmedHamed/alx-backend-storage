@@ -16,11 +16,11 @@ def count_requests(method: Callable) -> Callable:
     def wrapper(url):
         """ the decorator's child """
 
-        cached_html = cache.get(f"cached:{url}")
-        if cached_html:
-            return cached_html.decode('utf-8')
+        # cached_html = cache.get(f"cached:{url}")
+        # if cached_html:
+        #     return cached_html.decode('utf-8')
         html = method(url)
-        cache.setex(f"cached:{url}", 10, html)
+        # cache.setex(f"cached:{url}", 10, html)
         return html
 
     return wrapper
@@ -31,3 +31,12 @@ def get_page(url: str) -> str:
     """ Obtain the HTML content of a  URL """
     cache.incr("count:{" + url + "}")
     return requests.get(url).text
+
+# url = 'http://slowwly.robertomurray.co.uk'
+# print(cache.set("count:{" + url + "}"))
+# get_page(url)
+# print(cache.get("count:{" + url + "}"))
+# get_page(url)
+# get_page(url)
+# print(cache.get("count:{" + url + "}"))
+
