@@ -15,7 +15,7 @@ def count_requests(method: Callable) -> Callable:
     @wraps(method)
     def wrapper(url):  # sourcery skip: use-named-expression
         """ the decorator's child """
-        cache.incr(f"count:{url}")
+
         cached_html = cache.get(f"cached:{url}")
         if cached_html:
             return cached_html.decode('utf-8')
@@ -29,4 +29,5 @@ def count_requests(method: Callable) -> Callable:
 @count_requests
 def get_page(url: str) -> str:
     """ Obtain the HTML content of a  URL """
+    cache.incr(f"count:{url}")
     return requests.get(url).text
