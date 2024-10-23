@@ -16,16 +16,16 @@ def cache_decorator(method: Callable) -> Callable:
     """
 
     @wraps(method)
-    def inner(*args):
+    def inner(url):
         """
         inner func
         """
-        cache.incr(f"count:{args[0]}")
-        res = cache.get(f"cached:{args[0]}")
+        cache.incr(f"count:{url}")
+        res = cache.get(f"cached:{url}")
         if res:
             return res.decode('utf-8')
-        res = method(args[0])
-        cache.setex(f"cached:{args[0]}", 10, res)
+        res = method(url)
+        cache.setex(f"cached:{url}", 10, res)
         return res
     return inner
 
