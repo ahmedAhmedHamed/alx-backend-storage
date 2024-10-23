@@ -18,7 +18,7 @@ def cache_decorator(method: Callable) -> Callable:
         """
         inner func
         """
-
+        cache.incr(f"count:{args[0]}")
         res = cache.get(f"cached:{args[0]}")
         if res:
             return res.decode('utf-8')
@@ -35,6 +35,3 @@ def get_page(url: str) -> str:
     """
     res = requests.get(url).text
     return res
-
-get_page('http://slowwly.robertomurray.co.uk')
-get_page('http://slowwly.robertomurray.co.uk')
