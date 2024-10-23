@@ -3,9 +3,18 @@
 redis exercise
 """
 from typing import Callable
-
+from functools import wraps
 import redis
 import uuid
+
+
+def count_calls(method: Callable) -> Callable:
+    @wraps(method)
+    def inner(self, *args, **kwargs):
+        self._redis.incr(method.__qualname__)
+        return method(self, *args, **kwargs)
+
+    return inner
 
 
 class Cache:
@@ -19,6 +28,7 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    @count_calls
     def store(self, data: str | bytes | int | float) -> str:
         random_key = str(uuid.uuid4())
         self._redis.set(random_key, data)
