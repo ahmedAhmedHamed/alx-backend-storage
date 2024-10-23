@@ -12,24 +12,26 @@ import redis
 redis_instance = redis.Redis()
 
 
-def count_requests(method: Callable) -> Callable:
-    """ counting decorator """
+def cache(method):
+    """ decorator for url """
     @wraps(method)
-    def wrapper(url):  # sourcery skip: use-named-expression
-        """ counting decorator """
-        redis_instance.incr(f"count:{url}")
-        cached_html = redis_instance.get(f"cached:{url}")
-        if cached_html:
-            return cached_html.decode('utf-8')
+    def wrapper(url):
+        """ decorator for url """
+        cached_key = "cached:" + url
+        cached_data = redis_instance.get(cached_key)
+        if cached_data:
+            return cached_data.decode("utf-8")
+        count_key = "count:" + url
         html = method(url)
-        redis_instance.setex(f"cached:{url}", 10, html)
+        redis_instance.incr(count_key)
+        redis_instance.set(cached_key, html)
+        redis_instance.expire(cached_key, 10)
         return html
-
     return wrapper
 
 
-@count_requests
+@cache
 def get_page(url: str) -> str:
-    """ request html get """
+    """ Returns HTML content of a url """
     res = requests.get(url)
     return res.text
