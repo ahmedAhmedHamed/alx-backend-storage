@@ -4,7 +4,7 @@ redis exercise
 """
 from functools import wraps
 import redis
-from typing import Callable
+from typing import Callable, Union
 import uuid
 
 
@@ -23,6 +23,7 @@ def replay(method: Callable):
         arrow = ' -> '
         out_message = out_history[i].decode("utf-8")
         print(in_message + arrow + out_message)
+
 
 def count_calls(method: Callable) -> Callable:
     """
@@ -68,7 +69,7 @@ class Cache:
 
     @call_history
     @count_calls
-    def store(self, data: str | bytes | int | float) -> str:
+    def store(self, data: Union[str, bytes, int, float]) -> str:
         """
         stores the data in the cache
         """
