@@ -20,7 +20,7 @@ def cache_decorator(method: Callable) -> Callable:
         if res:
             return res.decode('utf-8')
         res = method(*args, **kwargs)
-        cache.setex(str(*args), 10, res)
+        cache.setex(f"cached:{args[0]}", 10, res)
         return res
     return inner
 
@@ -31,6 +31,4 @@ def get_page(url: str) -> str:
     gets a page using requests.get
     """
     res = requests.get(url).text
-    cache = redis.Redis()
-    cache.incr(f'count:{url}')
     return res
