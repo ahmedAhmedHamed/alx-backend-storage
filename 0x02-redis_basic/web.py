@@ -23,7 +23,6 @@ def my_cache(method: Callable) -> Callable:
         if result:
             return result.decode('utf-8')
         result = method(url)
-        redis_instance.set('count:' + url + '}', 0)
         redis_instance.setex(f'result:{url}', 10, result)
         return result
     return invoker
