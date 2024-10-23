@@ -20,7 +20,7 @@ def cache_decorator(method: Callable) -> Callable:
         if res:
             return res.decode('utf-8')
         res = method(*args, **kwargs)
-        cache.set(str(*args), res)
+        cache.setex(str(*args), 10, res)
         return res
     return inner
 
