@@ -27,5 +27,8 @@ def cache_decorator(method: Callable) -> Callable:
 
 @cache_decorator
 def get_page(url: str) -> str:
+    """
+    gets a page using requests.get
+    """
     res = requests.get(url).text
     return res
