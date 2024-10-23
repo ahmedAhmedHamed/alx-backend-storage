@@ -2,9 +2,25 @@
 """
 redis exercise
 """
+from functools import wraps
 import redis
 from typing import Callable, Union, Optional
 import uuid
+
+
+def count_calls(method: Callable) -> Callable:
+    """
+    counts the call of a particular function
+    """
+    @wraps(method)
+    def inner(self, *args, **kwargs):
+        """
+        inner doc
+        """
+        self._redis.incr(method.__qualname__)
+        return method(self, *args, **kwargs)
+
+    return inner
 
 
 class Cache:
@@ -18,6 +34,7 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """
         stores the data in the cache
