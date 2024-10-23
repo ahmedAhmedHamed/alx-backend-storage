@@ -21,9 +21,7 @@ def cache(method):
         cached_data = redis_instance.get(cached_key)
         if cached_data:
             return cached_data.decode("utf-8")
-        count_key = "count:" + url
         html = method(url)
-        redis_instance.incr(count_key)
         redis_instance.set(cached_key, html)
         redis_instance.expire(cached_key, 10)
         return html
@@ -33,5 +31,7 @@ def cache(method):
 @cache
 def get_page(url: str) -> str:
     """ Returns HTML content of a url """
+    count_key = "count:" + url
+    redis_instance.incr(count_key)
     res = requests.get(url)
     return res.text
