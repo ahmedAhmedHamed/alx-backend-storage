@@ -12,25 +12,24 @@ import redis
 redis_instance = redis.Redis()
 
 
-def my_cache(method: Callable) -> Callable:
-    """ Caches the output of fetched data. """
+def count_requests(method: Callable) -> Callable:
+    """ counting decorator """
     @wraps(method)
-    def invoker(url) -> str:
-        """The wrapper function for caching the output.
-        """
-        redis_instance.incr('count:' + url + '}')
-        result = redis_instance.get(f'result:{url}')
-        if result:
-            return result.decode('utf-8')
-        result = method(url)
-        redis_instance.setex(f'result:{url}', 10, result)
-        return result
-    return invoker
+    def wrapper(url):  # sourcery skip: use-named-expression
+        """ counting decorator """
+        redis_instance.incr(f"count:{url}")
+        cached_html = redis_instance.get(f"cached:{url}")
+        if cached_html:
+            return cached_html.decode('utf-8')
+        html = method(url)
+        redis_instance.setex(f"cached:{url}", 10, html)
+        return html
+
+    return wrapper
 
 
-@my_cache
+@count_requests
 def get_page(url: str) -> str:
-    """Returns the content of a URL after caching the request's response,
-    and tracking the request.
-    """
-    return requests.get(url).text
+    """ request html get """
+    res = requests.get(url)
+    return res.text
