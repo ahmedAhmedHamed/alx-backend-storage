@@ -2,9 +2,9 @@
 """
 redis exercise
 """
-from typing import Callable
 from functools import wraps
 import redis
+from typing import Callable
 import uuid
 
 
