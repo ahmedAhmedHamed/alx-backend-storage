@@ -18,12 +18,12 @@ def my_cache(method: Callable) -> Callable:
     def invoker(url) -> str:
         """The wrapper function for caching the output.
         """
-        redis_instance.incr(f'count:{url}')
+        redis_instance.incr('count:' + url + '}')
         result = redis_instance.get(f'result:{url}')
         if result:
             return result.decode('utf-8')
         result = method(url)
-        redis_instance.set(f'count:{url}', 0)
+        redis_instance.set('count:' + url + '}', 0)
         redis_instance.setex(f'result:{url}', 10, result)
         return result
     return invoker
