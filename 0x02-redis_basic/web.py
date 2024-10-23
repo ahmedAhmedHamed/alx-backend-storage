@@ -13,7 +13,7 @@ cache = redis.Redis()
 def count_requests(method: Callable) -> Callable:
     """ decorator that counts requests """
     @wraps(method)
-    def wrapper(url):  # sourcery skip: use-named-expression
+    def wrapper(url):
         """ the decorator's child """
 
         cached_html = cache.get(f"cached:{url}")
@@ -29,5 +29,5 @@ def count_requests(method: Callable) -> Callable:
 @count_requests
 def get_page(url: str) -> str:
     """ Obtain the HTML content of a  URL """
-    cache.incr(f"count:{url}")
+    cache.incr("count:{" + url + "}")
     return requests.get(url).text
