@@ -31,7 +31,7 @@ def cache(method: Callable) -> Callable:
 @cache
 def get_page(url: str) -> str:
     """ Returns HTML content of a url """
-    count_key = f"count:{url}"
+    count_key = "count:{url}"
     redis_instance.incr(count_key)
     res = requests.get(url)
     return res.text
